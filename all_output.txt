@@ -1,0 +1,150 @@
+To implement this project, we will need to create a simple ExpressJS server to serve our static files (HTML, CSS, JS). The quiz logic will be implemented on the client-side using JavaScript. 
+
+Let's start by creating the server:
+
+/server.js
+
+```js
+const express = require("express");
+const path = require("path");
+const app = express();
+const port = 8080;
+
+app.use(express.static(path.join(__dirname, "public")));
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
+```
+
+Next, we will create the HTML file that will be the user interface of our quiz app:
+
+/public/index.html
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swedish Phonetic Alphabet Quiz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Swedish Phonetic Alphabet Quiz</h1>
+    <div id="quiz-container">
+        <p id="question"></p>
+        <input type="text" id="answer" placeholder="Type your answer here">
+        <button id="submit">Submit</button>
+    </div>
+    <div id="result"></div>
+    <script src="main.js"></script>
+</body>
+</html>
+```
+
+Now, let's create the CSS file to style our app:
+
+/public/style.css
+
+```css
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+#quiz-container {
+    text-align: center;
+}
+
+#answer {
+    margin-top: 20px;
+    padding: 10px;
+    width: 200px;
+}
+
+#submit {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#result {
+    margin-top: 20px;
+    font-size: 20px;
+}
+```
+
+Finally, let's create the JavaScript file that will handle the quiz logic:
+
+/public/main.js
+
+```js
+const questionElement = document.getElementById('question');
+const answerElement = document.getElementById('answer');
+const submitButton = document.getElementById('submit');
+const resultElement = document.getElementById('result');
+
+const alphabet = {
+    'A': 'Adam',
+    'B': 'Bertil',
+    'C': 'Caesar',
+    // Add the rest of the alphabet here
+};
+
+let currentLetter = getRandomLetter();
+
+questionElement.textContent = `What is the word for the letter ${currentLetter}?`;
+
+submitButton.addEventListener('click', () => {
+    const userAnswer = answerElement.value.trim().toLowerCase();
+    const correctAnswer = alphabet[currentLetter].toLowerCase();
+
+    if (userAnswer === correctAnswer) {
+        resultElement.textContent = 'Correct!';
+        resultElement.style.color = 'green';
+    } else {
+        resultElement.textContent = `Wrong! The correct answer is ${alphabet[currentLetter]}.`;
+        resultElement.style.color = 'red';
+    }
+
+    currentLetter = getRandomLetter();
+    questionElement.textContent = `What is the word for the letter ${currentLetter}?`;
+    answerElement.value = '';
+});
+
+function getRandomLetter() {
+    const letters = Object.keys(alphabet);
+    return letters[Math.floor(Math.random() * letters.length)];
+}
+```
+
+Finally, we need to create a package.json file to manage our project's dependencies:
+
+/package.json
+
+```json
+{
+  "name": "swedish-phonetic-alphabet-quiz",
+  "version": "1.0.0",
+  "description": "A quiz app to learn the Swedish phonetic alphabet.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
+```
+
+To run the project, navigate to the project directory in the terminal and run `npm install` to install the dependencies, then run `npm start` to start the server. Open a web browser and navigate to `http://localhost:8080` to see the quiz app.
